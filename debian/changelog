@@ -1,3 +1,23 @@
+xstarfish (1.1-8) unstable; urgency=low
+
+  * add versioned dependency on debhelper (closes: #260557)
+  * changed .TH section of manpage to 1 to match location (thanks lintian)
+
+ -- Adrian Bridgett <bridgett@debian.org>  Tue,  7 Sep 2004 18:52:26 +0100
+
+xstarfish (1.1-7) unstable; urgency=low
+
+  * affect all screens, not just current desktop (closes: #202288)
+    thanks to James LewisMoss for the patch
+
+ -- Adrian Bridgett <bridgett@debian.org>  Mon, 21 Jul 2003 20:08:29 +0100
+
+xstarfish (1.1-6) unstable; urgency=low
+
+  * rebuild for usr/doc migration etc
+
+ -- Adrian Bridgett <bridgett@debian.org>  Sat, 31 May 2003 20:52:22 +0100
+
 xstarfish (1.1-5) unstable; urgency=low
 
   * lintian fix (remove emacs settings from changelog)

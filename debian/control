@@ -2,8 +2,8 @@ Source: xstarfish
 Section: games
 Priority: optional
 Maintainer: Adrian Bridgett <bridgett@debian.org>
-Build-Depends: debhelper, libpng2-dev, xlibs-dev
-Standards-Version: 3.2.1.0
+Build-Depends: debhelper (>=2), libpng12-dev, libx11-dev
+Standards-Version: 3.6.1.1
 
 Package: xstarfish
 Architecture: any
@@ -11,7 +11,7 @@ Depends: ${shlibs:Depends}
 Replaces: starfish
 Conflicts: starfish
 Provides: starfish
-Description: X wallpaper generator.
+Description: X wallpaper generator
  XStarfish generates colourful, tiled images for your background using random
  numbers fed through mathematical functions. It does not use source image
  files, so it can generate its images nearly forever without running out of
