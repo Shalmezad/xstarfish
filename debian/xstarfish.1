@@ -17,10 +17,10 @@ forever without running out of material.
 .SH OPTIONS
 .TP
 \fB-h\fR, \fB--usage\fR
-Print the message you're reading now
+Print the message you're reading now.
 .TP
 \fB-v\fR, \fB--version\fR
-Current version of the program
+Current version of the program.
 .TP
 \fB-d\fR, \fB--daemon\fI INTERVAL\fR [\fIUNITS\fR]
 Fork off into the background. XStarfish will generate a pattern, sleep for
@@ -28,12 +28,20 @@ Fork off into the background. XStarfish will generate a pattern, sleep for
 \fIminutes\fR, \fIhours\fR, \fIdays\fR, \fIweeks\fR. Seconds are the
 default interval.
 .TP
+\fB-p\fR, \fB--pidfile\fR
+Creates a \fI$HOME/.xstarfish*\fR file containing the pid of the daemon if
+xstarfish is forking into the background.\n"
+.TP
 \fB--display\fI DISPLAY\fR
-Name of the target display
+Name of the target display.
 .TP
 \fB-g\fR, \fB--geometry\fI W\fR[x\fIH]\fR
 Size of desired image. If you omit the height, a square pattern WxW will be
 generated.
+.TP
+\fB-z\fR, \fB--zoom\fI X\fR[x\fIY]\fR
+Zoom factor of image.  If you omit the y-scale, a uniform zoom of XxX will
+be applied.
 .TP
 \fB-s\fR, \fB--size\fI SIZE\fR
 An approximate size in English. Valid size arguments are \fIsmall\fR,
@@ -44,7 +52,7 @@ the default monitor size. \fIRandom\fR can be any size from 64x64 up to the
 whole monitor. Size always overrides geometry.
 .TP
 \fB-r\fR, \fB--random\fI SEED\fR
-Seed for rand() call - for debugging purposes
+Seed for rand() call - for debugging purposes.
 .PP
 
 .SH NOTES
@@ -52,4 +60,3 @@ The default size is 256x256.
 
 .SH AUTHOR
 Mars Saxman <mars@redplanetsw.com>
-

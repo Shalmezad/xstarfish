@@ -1,2 +1,2 @@
-?package(starfish):command="/usr/bin/starfish"  needs="X11" \
-               section="Games/Toys" title="Starfish"
+?package(xstarfish):command="/usr/bin/xstarfish"  needs="X11" \
+               section="Games/Toys" title="XStarfish"
