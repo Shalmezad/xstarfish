@@ -1,3 +1,9 @@
+xstarfish (1.1-9) unstable; urgency=low
+
+  * upgrades standards
+
+ -- Adrian Bridgett <bridgett@debian.org>  Mon, 29 Aug 2005 15:28:20 +0100
+
 xstarfish (1.1-8) unstable; urgency=low
 
   * add versioned dependency on debhelper (closes: #260557)
