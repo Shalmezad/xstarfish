@@ -2,7 +2,7 @@ Source: xstarfish
 Section: games
 Priority: optional
 Maintainer: Adrian Bridgett <bridgett@debian.org>
-Build-Depends: debhelper (>=4), libpng12-dev, libx11-dev
+Build-Depends: debhelper (>=4), libpng12-dev, libx11-dev, xbitmaps
 Standards-Version: 3.6.2.1
 
 Package: xstarfish
