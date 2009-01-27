@@ -1,13 +1,13 @@
 Source: xstarfish
-Section: games
+Section: utils
 Priority: optional
-Maintainer: Adrian Bridgett <bridgett@debian.org>
-Build-Depends: debhelper (>=4), libpng12-dev, libx11-dev, xbitmaps
-Standards-Version: 3.6.2.1
+Maintainer: Debian QA Group <packages@qa.debian.org>
+Build-Depends: debhelper (>=5), libpng12-dev, libx11-dev, xbitmaps
+Standards-Version: 3.8.0
 
 Package: xstarfish
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: starfish
 Conflicts: starfish
 Provides: starfish

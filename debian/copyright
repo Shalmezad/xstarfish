@@ -1,5 +1,11 @@
-starfish (c) Mars Saxman <mars@redplanetsw.com>
-released under the GPL (see /usr/share/common-licenses/GPL)
-
 Packaged by Adrian Bridgett <bridgett@debian.org> from sources obtained
 at http://www.redplanetsw.com/starfish
+
+Upstream Author: Mars Saxman <mars@redplanetsw.com>
+
+Copyright: 
+	Copyright (C) 1999-2000 Mars Saxman <mars@redplanetsw.com>
+	Copyright (C) 2000 (makepng.*) by Philip Derrin
+
+License:
+released under the GPL (see /usr/share/common-licenses/GPL)

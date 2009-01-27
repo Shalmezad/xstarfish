@@ -2,7 +2,6 @@
 
 # This script uses debhelper by Joey Hess
 export DH_VERBOSE=1
-export DH_COMPAT=4
 
 DEB=debian/xstarfish
 
@@ -16,7 +15,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
-	-$(MAKE) -i clean
+	[ ! -f Makefile ] || $(MAKE) -i clean
 	dh_clean
 
 install: build
@@ -37,7 +36,7 @@ binary-arch:	build install
 	# dh_link src dest src dest...
 	dh_installdocs README TODO
 	dh_installmenu
-	dh_installmanpages
+	dh_installman debian/xstarfish.1
 	dh_installchangelogs
 	dh_strip
 	dh_compress

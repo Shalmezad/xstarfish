@@ -1,2 +1,2 @@
 ?package(xstarfish):command="/usr/bin/xstarfish"  needs="X11" \
-               section="Games/Toys" title="XStarfish"
+               section="Screen/Saving" title="XStarfish"
