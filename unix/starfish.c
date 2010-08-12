@@ -58,15 +58,15 @@ void usage(void)
 		"		Print the message you're reading now\n"
 		"-d,--daemon:	Fork off into the background. This offers two arguments.\n"
 		"		The first argument is an interval between patterns;\n"
-		"		XStarfish will generate a pattern, sleep that many\n"
+		"		Starfish will generate a pattern, sleep that many\n"
 		"		seconds, then repeat. The second argument specifies the\n"
 		"		units for the sleep interval: seconds, minutes, hours,\n"
 		"		days, weeks. Seconds are the default interval.\n"
-		"-v/--version:	Current version of this program.\n"
-		"-g/--geometry: Size of desired image in WxH format. If you omit the height,\n"
+		"-v/--version:	current version of this program.\n"
+		"-g/--geometry: size of desired image in WxH format. If you omit the height,\n"
 		"		a square pattern WxW will be generated.\n"
-		"-o,--outfile:  Specify an output file. If you use this option,\n"
-		"		xstarfish will write a png file instead of setting the X11\n"
+		"-o,--outfile: specify an output file. If you use this option,\n"
+		"		starfish will write a png file instead of setting the X11\n"
 		"		desktop.\n"
 		"-s,--size:	An approximate size in English. Valid size arguments are\n"
 		"		small, medium, large, full, and random. Full size creates\n"
@@ -75,12 +75,8 @@ void usage(void)
 		"		fractions of the default monitor size. And random can be\n"
 		"		any size from 64x64 up to the whole monitor. Size always\n"
 		"		overrides geometry.\n"
- 		"-z/--zoom:     Zoom factor in XxY. If you omit the y-zoom factor,\n"
- 		"		the zoom factor will be XxX.\n"
- 		"-p/--pidfile:	Creates a $HOME/.xstarfish* file containing the pid\n"
- 		"               of the daemon if xstarfish is forking into the background.\n"
-	        "-r,--random:   Specify seed for rand() call - for debugging.\n"
-		"--display:	Name of the desired target display.\n"
+	        "-r,--random:   specify seed for rand() call - for debugging.\n"
+		"--display:	one argument, name of the desired target display.\n"
 	    );
 	}
 
@@ -210,12 +206,9 @@ int main(int argc, char** argv)
 	int width, height;
 	int sleeptime;
 	int daemon;
- 	int pid;
- 	int pidfile;
 	StarfishRef texture;
 	const char* displayName;
 	const char* sizeName;
- 	int xzoom, yzoom;
 	const char* filename;
 	char haveOutfile;
 	/*
@@ -224,13 +217,11 @@ int main(int argc, char** argv)
 	width = height = 256;
 	sleeptime = 20 * 60;	/* measured in seconds */
 	daemon = 0;
-	pidfile = 0;
 	displayName = NULL;
 	sizeName = NULL;
 	filename = NULL;
 	haveOutfile = 0;
 	srand(time(0));  /* we may override this when parsing the arguments */
-        xzoom = yzoom = 1;
 	for(ctr = 1; ctr < argc; ctr++)
 		{
 		if(argv[ctr][0] != '-')
@@ -238,10 +229,6 @@ int main(int argc, char** argv)
 			fprintf(stderr, "xstarfish: parameter \"%s\" is bogus.\n", argv[ctr]);
 			return 1;
 			}
-  		if(!strcmp(argv[ctr], "-p") || !strcmp(argv[ctr], "--pidfile"))
-  			{
-  				pidfile=1;
-  			}
 		if(!strcmp(argv[ctr], "-d") || !strcmp(argv[ctr], "--daemon"))
 			{
 			/*
@@ -285,14 +272,6 @@ int main(int argc, char** argv)
 			if(ctr + 1 < argc) ExtractGeometry(argv[++ctr], &width, &height);
 				else fprintf(stderr, "xstarfish: geometry value is missing");
 			}
- 		else if(!strcmp(argv[ctr], "-z") || !strcmp(argv[ctr], "--zoom"))
- 			{
- 			/*
- 			Parse a size string. The format is always WWxHH
- 			*/
- 			if(ctr + 1 < argc) ExtractGeometry(argv[++ctr], &xzoom, &yzoom);
- 				else fprintf(stderr, "xstarfish: zoom value is missing.\n");
-  			}
 		else if(!strcmp(argv[ctr], "-o") || !strcmp(argv[ctr], "--outfile"))
 			{
 			/*
@@ -376,19 +355,7 @@ int main(int argc, char** argv)
 	This line relies on conditional evaluation.
 	IIRC, that's in K&R, so it should be alright...
 	*/
-	if(daemon && (pid=fork())) {
-	  if(pidfile) {
-	    FILE* f;
-	    char fn[128];
-	    sprintf(fn, "%s/.xstarfish%s.pid",
-	      getenv("HOME")?getenv("HOME"):"/tmp",
-	      displayName?displayName:getenv("DISPLAY"));
-	    f=fopen(fn,"w");
-	    fprintf(f,"%d\n",pid);
-	    fclose(f);
-	  }
-	  return 0;
-	}
+	if(daemon && fork()) return 0;
 	/*
 	Do the thing that makes Starfish worth installing.
 	Create a seamlessly tiled, anti-aliased image. Then do with
@@ -403,7 +370,7 @@ int main(int argc, char** argv)
 		if(texture)
 			{
 			if(haveOutfile) MakePNGFile(texture, filename);
-			else SetXDesktop(texture, displayName, xzoom, yzoom);
+			else SetXDesktop(texture, displayName);
 			DumpStarfish(texture);
 			}
 		else

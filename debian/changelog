@@ -1,3 +1,13 @@
+xstarfish (1.1-11) unstable; urgency=low
+
+  * New maintainer (Closes: #486776)
+  * Updated copyright file
+  * Applied patch to discribe -o/--outfile option in man page (Closes: #519008)
+    Thanks to Christian Hammers
+  * Updated standards version to 3.9.1
+
+ -- Simon Fondrie-Teitler <simonft@riseup.net>  Wed, 11 Aug 2010 23:59:10 -0400
+
 xstarfish (1.1-10) unstable; urgency=low
 
   * QA upload.

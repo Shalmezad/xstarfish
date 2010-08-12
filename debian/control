@@ -1,9 +1,9 @@
 Source: xstarfish
 Section: utils
 Priority: optional
-Maintainer: Debian QA Group <packages@qa.debian.org>
+Maintainer: Simon Fondrie-Teitler <simonft@riseup.net>
 Build-Depends: debhelper (>=5), libpng12-dev, libx11-dev, xbitmaps
-Standards-Version: 3.8.0
+Standards-Version: 3.9.1
 
 Package: xstarfish
 Architecture: any

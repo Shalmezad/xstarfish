@@ -1,0 +1,412 @@
+This is a conglomerate of patches put into place by the last maintainer. 
+
+---
+
+--- xstarfish-1.1.orig/unix/setdesktop.h
++++ xstarfish-1.1/unix/setdesktop.h
+@@ -23,4 +23,4 @@ Foundation, Inc., 59 Temple Place - Suit
+ 
+ */
+ 
+-void SetXDesktop(StarfishRef tex, const char* display);
++void SetXDesktop(StarfishRef tex, const char* display, int xzoom, int yzoom);
+--- xstarfish-1.1.orig/unix/starfish.c
++++ xstarfish-1.1/unix/starfish.c
+@@ -58,15 +58,15 @@ void usage(void)
+ 		"		Print the message you're reading now\n"
+ 		"-d,--daemon:	Fork off into the background. This offers two arguments.\n"
+ 		"		The first argument is an interval between patterns;\n"
+-		"		Starfish will generate a pattern, sleep that many\n"
++		"		XStarfish will generate a pattern, sleep that many\n"
+ 		"		seconds, then repeat. The second argument specifies the\n"
+ 		"		units for the sleep interval: seconds, minutes, hours,\n"
+ 		"		days, weeks. Seconds are the default interval.\n"
+-		"-v/--version:	current version of this program.\n"
+-		"-g/--geometry: size of desired image in WxH format. If you omit the height,\n"
++		"-v/--version:	Current version of this program.\n"
++		"-g/--geometry: Size of desired image in WxH format. If you omit the height,\n"
+ 		"		a square pattern WxW will be generated.\n"
+-		"-o,--outfile: specify an output file. If you use this option,\n"
+-		"		starfish will write a png file instead of setting the X11\n"
++		"-o,--outfile:  Specify an output file. If you use this option,\n"
++		"		xstarfish will write a png file instead of setting the X11\n"
+ 		"		desktop.\n"
+ 		"-s,--size:	An approximate size in English. Valid size arguments are\n"
+ 		"		small, medium, large, full, and random. Full size creates\n"
+@@ -75,8 +75,12 @@ void usage(void)
+ 		"		fractions of the default monitor size. And random can be\n"
+ 		"		any size from 64x64 up to the whole monitor. Size always\n"
+ 		"		overrides geometry.\n"
+-	        "-r,--random:   specify seed for rand() call - for debugging.\n"
+-		"--display:	one argument, name of the desired target display.\n"
++ 		"-z/--zoom:     Zoom factor in XxY. If you omit the y-zoom factor,\n"
++ 		"		the zoom factor will be XxX.\n"
++ 		"-p/--pidfile:	Creates a $HOME/.xstarfish* file containing the pid\n"
++ 		"               of the daemon if xstarfish is forking into the background.\n"
++	        "-r,--random:   Specify seed for rand() call - for debugging.\n"
++		"--display:	Name of the desired target display.\n"
+ 	    );
+ 	}
+ 
+@@ -206,9 +210,12 @@ int main(int argc, char** argv)
+ 	int width, height;
+ 	int sleeptime;
+ 	int daemon;
++ 	int pid;
++ 	int pidfile;
+ 	StarfishRef texture;
+ 	const char* displayName;
+ 	const char* sizeName;
++ 	int xzoom, yzoom;
+ 	const char* filename;
+ 	char haveOutfile;
+ 	/*
+@@ -217,11 +224,13 @@ int main(int argc, char** argv)
+ 	width = height = 256;
+ 	sleeptime = 20 * 60;	/* measured in seconds */
+ 	daemon = 0;
++	pidfile = 0;
+ 	displayName = NULL;
+ 	sizeName = NULL;
+ 	filename = NULL;
+ 	haveOutfile = 0;
+ 	srand(time(0));  /* we may override this when parsing the arguments */
++        xzoom = yzoom = 1;
+ 	for(ctr = 1; ctr < argc; ctr++)
+ 		{
+ 		if(argv[ctr][0] != '-')
+@@ -229,6 +238,10 @@ int main(int argc, char** argv)
+ 			fprintf(stderr, "xstarfish: parameter \"%s\" is bogus.\n", argv[ctr]);
+ 			return 1;
+ 			}
++  		if(!strcmp(argv[ctr], "-p") || !strcmp(argv[ctr], "--pidfile"))
++  			{
++  				pidfile=1;
++  			}
+ 		if(!strcmp(argv[ctr], "-d") || !strcmp(argv[ctr], "--daemon"))
+ 			{
+ 			/*
+@@ -272,6 +285,14 @@ int main(int argc, char** argv)
+ 			if(ctr + 1 < argc) ExtractGeometry(argv[++ctr], &width, &height);
+ 				else fprintf(stderr, "xstarfish: geometry value is missing");
+ 			}
++ 		else if(!strcmp(argv[ctr], "-z") || !strcmp(argv[ctr], "--zoom"))
++ 			{
++ 			/*
++ 			Parse a size string. The format is always WWxHH
++ 			*/
++ 			if(ctr + 1 < argc) ExtractGeometry(argv[++ctr], &xzoom, &yzoom);
++ 				else fprintf(stderr, "xstarfish: zoom value is missing.\n");
++  			}
+ 		else if(!strcmp(argv[ctr], "-o") || !strcmp(argv[ctr], "--outfile"))
+ 			{
+ 			/*
+@@ -355,7 +376,19 @@ int main(int argc, char** argv)
+ 	This line relies on conditional evaluation.
+ 	IIRC, that's in K&R, so it should be alright...
+ 	*/
+-	if(daemon && fork()) return 0;
++	if(daemon && (pid=fork())) {
++	  if(pidfile) {
++	    FILE* f;
++	    char fn[128];
++	    sprintf(fn, "%s/.xstarfish%s.pid",
++	      getenv("HOME")?getenv("HOME"):"/tmp",
++	      displayName?displayName:getenv("DISPLAY"));
++	    f=fopen(fn,"w");
++	    fprintf(f,"%d\n",pid);
++	    fclose(f);
++	  }
++	  return 0;
++	}
+ 	/*
+ 	Do the thing that makes Starfish worth installing.
+ 	Create a seamlessly tiled, anti-aliased image. Then do with
+@@ -370,7 +403,7 @@ int main(int argc, char** argv)
+ 		if(texture)
+ 			{
+ 			if(haveOutfile) MakePNGFile(texture, filename);
+-			else SetXDesktop(texture, displayName);
++			else SetXDesktop(texture, displayName, xzoom, yzoom);
+ 			DumpStarfish(texture);
+ 			}
+ 		else
+--- xstarfish-1.1.orig/unix/setdesktop.c
++++ xstarfish-1.1/unix/setdesktop.c
+@@ -32,114 +32,210 @@ Foundation, Inc., 59 Temple Place, Suite
+ #include <sys/types.h>
+ #include "starfish-engine.h"
+ 
+-Display *display;
+-int screen,depth,bpp,width,height;
+-Window rootwin;
+-GC gc;
+-XImage *image=0;
++ struct display_info_struct
++ {
++     Display *display;
++     int screen;
++     int depth;
++     int bpp;
++     int width;
++     int height;
++     Window rootwin;
++     GC gc;
++     XImage *image;
++ };
++typedef struct display_info_struct display_info;
+ 
+ int compose(int i, int shift)
+ {
+-  return (shift<0) ? (i>>(-shift)) : (i<<shift); 
++  return (shift<0) ? (i>>(-shift)) : (i<<shift);
+ }
+ 
+-void fillimage(StarfishRef tex)
++void fillimage(StarfishRef tex, display_info *di, int xzoom, int yzoom)
+ {
+   int x,y;
++  int dx,dy,i;
+   unsigned long value;
+   int redshift,greenshift,blueshift;
+-  pixel pixel;
+-     
+-  x=image->red_mask; redshift=-8;
++  pixel pixel, oldpix;
++  float xstep,ystep,pixr,pixg,pixb,dr,dg,db;
++
++  x=di->image->red_mask; redshift=-8;
+   while(x) { x/=2; redshift++; }
+-  x=image->green_mask; greenshift=-8;
++  x=di->image->green_mask; greenshift=-8;
+   while(x) { x/=2; greenshift++; }
+-  x=image->blue_mask; blueshift=-8;
++  x=di->image->blue_mask; blueshift=-8;
+   while(x) { x/=2; blueshift++; }
+-     
+-  for (y=0; y<height; y++)
++
++  dy=0;
++  xstep=1.0/xzoom;
++  ystep=1.0/yzoom;
++  for (y=0; y<di->height; y++)
+   {
+-    for (x=0; x<width; x++)
++    dx=0;
++    for (x=0; x<di->width; x++)
+     {
+       GetStarfishPixel(x, y, tex, &pixel);
+-      value  = compose(pixel.red,redshift) & image->red_mask;
+-      value += compose(pixel.green,greenshift) & image->green_mask;
+-      value += compose(pixel.blue,blueshift) & image->blue_mask;
+-      XPutPixel(image,x,y,value);
++      value  = compose(pixel.red,redshift) & di->image->red_mask;
++      value += compose(pixel.green,greenshift) & di->image->green_mask;
++      value += compose(pixel.blue,blueshift) & di->image->blue_mask;
++      // we want the end of the zoomed area to get the pixel...
++      XPutPixel(di->image,dx+xzoom-1,dy,value);
++      // so that we can generate the interpolated pixels to it's left.
++      if(xzoom>1) {
++        if(x==0) GetStarfishPixel(di->width-1, y, tex, &oldpix);
++        dr=(pixel.red-oldpix.red)*xstep;
++        dg=(pixel.green-oldpix.green)*xstep;
++        db=(pixel.blue-oldpix.blue)*xstep;
++        pixr=pixel.red;
++        pixg=pixel.green;
++        pixb=pixel.blue;
++        for(i=xzoom-2; i>=0; i--) {
++          pixr-=dr;
++          pixg-=dg;
++          pixb-=db;
++          value  = compose(pixr,redshift) & di->image->red_mask;
++          value += compose(pixg,greenshift) & di->image->green_mask;
++          value += compose(pixb,blueshift) & di->image->blue_mask;
++          XPutPixel(di->image,dx+i,dy,value);
++        }
++        memcpy(&oldpix, &pixel, sizeof(pixel));
++      }
++      dx+=xzoom;
++    }
++    if(y>0) {
++      do {
++        for(dx=0; dx<(di->width*xzoom); dx++) {
++          if(y==di->height) value=XGetPixel(di->image,dx,0);
++          else value=XGetPixel(di->image,dx,dy);
++          pixr=(value&di->image->red_mask)>>redshift;
++          pixg=(value&di->image->green_mask)>>greenshift;
++          pixb=(value&di->image->blue_mask)>>blueshift;
++          value=XGetPixel(di->image,dx,dy-yzoom);
++          dr=(value&di->image->red_mask)>>redshift;
++          dg=(value&di->image->green_mask)>>greenshift;
++          db=(value&di->image->blue_mask)>>blueshift;
++          dr=(pixr-dr)*ystep;
++          dg=(pixg-dg)*ystep;
++          db=(pixb-db)*ystep;
++          for(i=1; i<=yzoom; i++) {
++            pixr-=dr;
++            pixg-=dg;
++            pixb-=db;
++            value  = compose(pixr,redshift) & di->image->red_mask;
++            value += compose(pixg,greenshift) & di->image->green_mask;
++            value += compose(pixb,blueshift) & di->image->blue_mask;
++            XPutPixel(di->image,dx,dy-i,value);
++          }
++        }
++      } while(y==di->height-1 && y++ && (dy+=yzoom));
+     }
++    dy+=yzoom;
+   }
+ }
+ 
+-void XSetWindowBackgroundImage(Display* display, Drawable window, XImage* image)
++void XSetWindowBackgroundImage(display_info *di)
+ {
+   Pixmap out;
+-  if (out = XCreatePixmap(display, window, image->width, image->height, depth))
++  if (out = XCreatePixmap(di->display, di->rootwin,
++                          di->image->width, di->image->height,
++                          di->depth))
+   {
+-    XPutImage(display, out, gc, image, 0,0, 0,0, image->width, image->height);
+-    XSetWindowBackgroundPixmap(display, window, out);
+-    XFreePixmap(display, out);
++    XPutImage(di->display, out, di->gc, di->image, 0,0, 0,0,
++              di->image->width, di->image->height);
++    XSetWindowBackgroundPixmap(di->display, di->rootwin, out);
++    XFreePixmap(di->display, out);
+     //Force the entire window to redraw itself. This shows our pixmap.
+-    XClearWindow(display, window);
++    XClearWindow(di->display, di->rootwin);
+   }
+ }
+ 
+-void mainloop(StarfishRef tex)
++void mainloop(StarfishRef tex, display_info *displays, int xzoom, int yzoom)
+ {
+   char *buf;
+   int bpl;
+   int n_pmf;
+   int i;
+-  XPixmapFormatValues * pmf;   
+-     
+-  pmf = XListPixmapFormats (display, &n_pmf);
+-  if (pmf)
++  XPixmapFormatValues * pmf;
++  display_info *di_counter;
++  int j = 0;
++
++  for(di_counter = &displays[j]; di_counter->display != 0;
++      j++, di_counter = &displays[j])
+   {
+-    for (i = 0; i < n_pmf; i++)
+-    {
+-      if (pmf[i].depth == depth)
++      pmf = XListPixmapFormats (di_counter->display, &n_pmf);
++      if (pmf)
+       {
+-        int pad, pad_bytes;
+-        bpp = pmf[i].bits_per_pixel;
+-	bpl = width * bpp / 8;
+-	pad = pmf[i].scanline_pad;
+-	pad_bytes = pad / 8;
+-	/* make bpl a whole multiple of pad/8 */
+-	bpl = (bpl + pad_bytes - 1) & ~(pad_bytes - 1);
+-        buf=malloc(height*bpl);
+-        image=XCreateImage(display,DefaultVisual(display,screen), depth,
+-       	                   ZPixmap,0,buf,width,height,pad,bpl);
+-        if(!image)
+-        {
+-          puts("starfish: XCreateImage failed");
+-          return;
+-        }
+-	break;
++          for (i = 0; i < n_pmf; i++)
++          {
++              if (pmf[i].depth == di_counter->depth)
++              {
++                  int pad, pad_bytes;
++                  di_counter->bpp = pmf[i].bits_per_pixel;
++                  bpl = di_counter->width * xzoom * di_counter->bpp / 8;
++                  pad = pmf[i].scanline_pad;
++                  pad_bytes = pad / 8;
++                  /* make bpl a whole multiple of pad/8 */
++                  bpl = (bpl + pad_bytes - 1) & ~(pad_bytes - 1);
++                  buf=malloc(di_counter->height*bpl*yzoom);
++                  di_counter->image = XCreateImage(
++                      di_counter->display,
++                      DefaultVisual(di_counter->display,
++                                    di_counter->screen),
++                      di_counter->depth, ZPixmap,0,buf,
++                      di_counter->width*xzoom,
++                      di_counter->height*yzoom, pad,bpl);
++                  if(!di_counter->image)
++                  {
++                      puts("xstarfish: XCreateImage failed");
++                      return;
++                  }
++                  break;
++              }
++          }
++          XFree ((char *) pmf);
+       }
+-    }
+-    XFree ((char *) pmf);
+-  }    
+ 
+-  if (! XInitImage(image))
+-    return;
+-  fillimage(tex);
+-  XSetWindowBackgroundImage(display, rootwin, image);
+-  XDestroyImage(image);
++      if (! XInitImage(di_counter->image))
++          return;
++      fillimage(tex, di_counter, xzoom, yzoom);
++      XSetWindowBackgroundImage(di_counter);
++      XDestroyImage(di_counter->image);
++  }
+ }
+ 
+-void SetXDesktop(StarfishRef tex, const char* displayname)
++void SetXDesktop(StarfishRef tex, const char* displayname,
++                 int xzoom, int yzoom)
+ {
++  display_info *displays;
++  Display *display;
++  int screen_count;
++  int i;
+   if (! (display = XOpenDisplay(displayname)))
+   {
+     fprintf(stderr, "xstarfish: Failed to open display\n");
+     return;
+   }
+-  screen = DefaultScreen(display);
+-  depth = DefaultDepth(display, screen);
+-  rootwin = RootWindow(display, screen);
+-  gc=DefaultGC(display,screen);
+-  width = StarfishWidth(tex);
+-  height = StarfishHeight(tex);
+-  mainloop(tex);
+-  XCloseDisplay(display);
++  screen_count = ScreenCount(display);
++  displays = malloc(sizeof(display_info) * (screen_count + 1));
++
++  displays[screen_count].display = 0;
++
++  for(i = 0; i < screen_count; i++)
++  {
++      displays[i].display = display;
++      displays[i].image = 0;
++      displays[i].screen = i;
++      displays[i].depth = DefaultDepth(displays[i].display,
++                                       displays[i].screen);
++      displays[i].rootwin = RootWindow(displays[i].display,
++                                       displays[i].screen);
++      displays[i].gc = DefaultGC(displays[i].display, displays[i].screen);
++      displays[i].width = StarfishWidth(tex);
++      displays[i].height = StarfishHeight(tex);
++  }
++
++  mainloop(tex, displays, xzoom, yzoom);
++  XCloseDisplay(displays[0].display);
+   return;
+ }

@@ -23,4 +23,4 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-void SetXDesktop(StarfishRef tex, const char* display, int xzoom, int yzoom);
+void SetXDesktop(StarfishRef tex, const char* display);

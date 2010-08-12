@@ -1,11 +1,40 @@
-Packaged by Adrian Bridgett <bridgett@debian.org> from sources obtained
-at http://www.redplanetsw.com/starfish
+Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=135
+Name: xstarfish
+Maintainer: Mars Saxman <mars@redplanetsw.com>
+Source: http://www.redplanetsw.com/starfish
 
-Upstream Author: Mars Saxman <mars@redplanetsw.com>
+Copyright: 2000 Mars Saxman <mars@redplanetsw.com>
+License: GPL-2+
 
-Copyright: 
-	Copyright (C) 1999-2000 Mars Saxman <mars@redplanetsw.com>
-	Copyright (C) 2000 (makepng.*) by Philip Derrin
+Files: ./unix/makepng.*
+Copyright: 2000, Philip Derrin <pderrin@dingoblue.net.au>
+License: GPL-2+
 
-License:
-released under the GPL (see /usr/share/common-licenses/GPL)
+Files: ./unix/setdesktop.c
+Copyright: 1999 Sebastien Loisel,
+           2000 Mars Saxman <mars@redplanetsw.com>
+License GPL-2+
+
+Files: ./debian/*
+Copyright: 2000-2008 Adrian Bridgett <bridgett@debian.org>,
+           2010 Simon Fondrie-Teitler <simonft@riseup.net>
+License GPL-2+
+
+License: GPL-2+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+    .
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    .
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+    .
+    On Debian systems, the full text of the GNU General Public
+    License version 2 can be found in the file
+    `/usr/share/common-licenses/GPL-2'.
