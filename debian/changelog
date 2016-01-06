@@ -1,3 +1,13 @@
+xstarfish (1.1-11.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Fix build failure with ld --as-needed. LP: #832847, using patch from doko
+    (Closes: #641274)
+  * Apply patch for libpng transistion, patch from Nobuhiro(Closes: #635704)
+  * Also, change B-D to libpng-dev (Closes: #662570)
+
+ -- Tobias Frost <tobi@debian.org>  Wed, 06 Jan 2016 10:55:22 +0100
+
 xstarfish (1.1-11) unstable; urgency=low
 
   * New maintainer (Closes: #486776)

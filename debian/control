@@ -2,7 +2,7 @@ Source: xstarfish
 Section: utils
 Priority: optional
 Maintainer: Simon Fondrie-Teitler <simonft@riseup.net>
-Build-Depends: debhelper (>=5), libpng12-dev, libx11-dev, xbitmaps
+Build-Depends: debhelper (>=5), libpng-dev, libx11-dev, xbitmaps
 Standards-Version: 3.9.1
 
 Package: xstarfish
@@ -15,4 +15,4 @@ Description: X wallpaper generator
  XStarfish generates colourful, tiled images for your background using random
  numbers fed through mathematical functions. It does not use source image
  files, so it can generate its images nearly forever without running out of
- material. 
+ material.

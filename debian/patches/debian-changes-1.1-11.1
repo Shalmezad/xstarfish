@@ -1,0 +1,40 @@
+Description: Upstream changes introduced in version 1.1-11.1
+ This patch has been created by dpkg-source during the package build.
+ Here's the last changelog entry, hopefully it gives details on why
+ those changes were made:
+ .
+ xstarfish (1.1-11.1) unstable; urgency=low
+ .
+   * Non-maintainer upload.
+   * libpng transition.
+ .
+ The person named in the Author field signed this changelog entry.
+Author: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- xstarfish-1.1.orig/unix/makepng.c
++++ xstarfish-1.1/unix/makepng.c
+@@ -79,7 +79,11 @@ void MakePNGFile(StarfishRef tex, const
+ 	if(theInfoPtr)
+ 	{
+ 		/* set up the png error handling. */
++#if PNG_LIBPNG_VER_MAJOR >= 1 && PNG_LIBPNG_VER_MINOR >= 4
++		if (setjmp(png_jmpbuf((theWritePtr))))
++#else
+ 		if (setjmp(theWritePtr->jmpbuf))
++#endif
+ 		{
+ 			png_destroy_write_struct(&theWritePtr, &theInfoPtr);
+ 			fclose(theFile);

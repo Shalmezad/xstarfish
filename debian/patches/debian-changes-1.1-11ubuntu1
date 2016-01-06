@@ -1,0 +1,47 @@
+Description: Upstream changes introduced in version 1.1-11ubuntu1
+ This patch has been created by dpkg-source during the package build.
+ Here's the last changelog entry, hopefully it gives details on why
+ those changes were made:
+ .
+ xstarfish (1.1-11ubuntu1) oneiric; urgency=low
+ .
+   * Fix build failure with ld --as-needed. LP: #832847.
+ .
+ The person named in the Author field signed this changelog entry.
+Author: Matthias Klose <doko@ubuntu.com>
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/832847
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: http://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: <YYYY-MM-DD>
+
+--- xstarfish-1.1.orig/Makefile
++++ xstarfish-1.1/Makefile
+@@ -2,14 +2,16 @@
+ # seems to work fairly well on a P3-300 too
+ CC = cc -O3 -funroll-all-loops -I ./portable -I ./portable/pixels/ \
+ 	-I ./portable/generators/ -I ./unix/ -g -D__USE_EXTERN_INLINES
+-LDFLAGS = -L/usr/X11R6/lib -lm -lX11 -lpng
++LDFLAGS = -L/usr/X11R6/lib
++LIBS = -lm -lX11 -lpng
+ VPATH = ./portable/:./portable/pixels/:./portable/generators/:./unix/
+ OBJECTS = 	starfish-engine.o generators.o genutils.o\
+ 		bufferxform.o greymap.o pixmap.o starfish-rasterlib.o \
+ 		coswave-gen.o spinflake-gen.o rangefrac-gen.o \
+ 		bubble-gen.o flatwave-gen.o setdesktop.o makepng.o
+ 
+-starfish: $(OBJECTS)
++starfish: $(OBJECTS) unix/starfish.o
++	$(CC) -o starfish $(LDFLAGS) $(OBJECTS) unix/starfish.o $(LIBS)
+ 
+ starfish-engine.o: starfish-engine.c starfish-engine.h generators.h \
+ 	starfish-rasterlib.h
