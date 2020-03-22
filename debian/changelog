@@ -1,3 +1,14 @@
+xstarfish (1.1+ds-1) unstable; urgency=medium
+
+  * Orphan the package.
+  * Repack the .orig tarball to remove binaries from a proprietary MacOS
+    tool which cause errors on QA (bad filenames, masquerading as .gz),
+    precompiled source, old Debian packaging.  Closes: #392396, #885953
+  * Drop pre-cretaceous Provides/Replaces.
+  * Ack NMU.  Closes: #810078
+
+ -- Adam Borowski <kilobyte@angband.pl>  Sun, 22 Mar 2020 02:57:33 +0100
+
 xstarfish (1.1-11.1) unstable; urgency=medium
 
   * Non-maintainer upload.
