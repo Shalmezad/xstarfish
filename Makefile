@@ -2,14 +2,16 @@
 # seems to work fairly well on a P3-300 too
 CC = cc -O3 -funroll-all-loops -I ./portable -I ./portable/pixels/ \
 	-I ./portable/generators/ -I ./unix/ -g -D__USE_EXTERN_INLINES
-LDFLAGS = -L/usr/X11R6/lib -lm -lX11 -lpng
+LDFLAGS = -L/usr/X11R6/lib
+LIBS = -lm -lX11 -lpng
 VPATH = ./portable/:./portable/pixels/:./portable/generators/:./unix/
 OBJECTS = 	starfish-engine.o generators.o genutils.o\
 		bufferxform.o greymap.o pixmap.o starfish-rasterlib.o \
 		coswave-gen.o spinflake-gen.o rangefrac-gen.o \
 		bubble-gen.o flatwave-gen.o setdesktop.o makepng.o
 
-starfish: $(OBJECTS)
+starfish: $(OBJECTS) unix/starfish.o
+	$(CC) -o starfish $(LDFLAGS) $(OBJECTS) unix/starfish.o $(LIBS)
 
 starfish-engine.o: starfish-engine.c starfish-engine.h generators.h \
 	starfish-rasterlib.h
