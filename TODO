@@ -1,0 +1,9 @@
+- add control over colour palette used;
+   support for this is already present in the generator code
+   but there is no access to it in the unix UI.
+- add more cool texture algorithms
+- add 8-bit display support
+- change to use dithering in 16 bit mode
+- support more than the default screen on multiscreen displays
+- GUI front end like the Mac version has
+

@@ -1,0 +1,22 @@
+(1)  Read the README file if you want to find out how it works.
+
+(2)  Type "make" to build the program.
+
+(3)  If the program built successfully, type "make install" to
+     copy the binary into /usr/local/bin/. This must be done as
+     root.
+
+(4)  If you like starfish and want it to run automatically, add
+     a line that invokes Starfish with your favourite options
+     to your ~/.Xsession file. This way starfish will be run
+     every time you enter X.
+
+Have fun!
+
+This is known to build under linux using gcc. It uses no OS-specific
+calls or features that I know of, and should build & run properly
+on any machine with access to Xlib and a copy of fork() in its
+kernel. If it doesn't run on your unix, please let me know and I'll
+endeavour to fix whatever I did wrong.
+
+***
