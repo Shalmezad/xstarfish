@@ -79,7 +79,11 @@ void MakePNGFile(StarfishRef tex, const char* filename)
 	if(theInfoPtr)
 	{
 		/* set up the png error handling. */
+#if PNG_LIBPNG_VER_MAJOR >= 1 && PNG_LIBPNG_VER_MINOR >= 4
+		if (setjmp(png_jmpbuf((theWritePtr))))
+#else
 		if (setjmp(theWritePtr->jmpbuf))
+#endif
 		{
 			png_destroy_write_struct(&theWritePtr, &theInfoPtr);
 			fclose(theFile);
