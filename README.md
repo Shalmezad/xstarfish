@@ -118,5 +118,7 @@ Starfish was originally written for the MacOS. The Mac source code is not
 included in this package.
 
 Copyright (c) 1999,2000 by Mars Saxman.
+
 Copyright (c) 1998 of the bits taken from zut by Sebastien Loisel.
+
 Copyright (c) 2000 (makepng.c) by Philip Derrin.
