@@ -1,35 +1,28 @@
+# xstarfish
+
 xstarfish: X wallpaper generator
-version 1.0, released 28 August 2000
 
-Please read the COPYING file for information on the distribution terms
-for this program and its source code.
-Please read the BUGS file for information on problems known to exist with
-this and other releases of starfish.
+Written by:
 
-This software comes with ABSOLUTELY NO WARRANTY. Use it at your
-OWN RISK. I am NOT responsible for any damage it may cause.
+* Mars Saxman
 
-written by:
-   Mars Saxman <mars@redplanetsw.com>
-with help from:
-  Sebastien Loisel's 'zut'
-  Adrian Bridgett <adrian.bridgett@iname.com>
-  Philip Derrin <pderrin@dingoblue.net.au>
-  "other peoples"
+With help from:
+* Sebastien Loisel's 'zut'
+* Adrian Bridgett
+* Philip Derrin
+* "other peoples"
 
-current web site is:
-  http://www.redplanetsw.com/starfish/
+Maintained by:
 
-latest release lives at:
-  ftp://ftp.redplanetsw.com/pub/marssoft/starfish/
+* Richard Wardin
 
-Nomenclature: 
+## Nomenclature
 
 "Starfish", with capitals, is a wallpaper generator program. "xstarfish"
 is the unix port of this program. Neither of these entities has any
 connection to "starfish", the xscreensaver hack. I regret the confusion.
 
-Description:
+## Description
 
 Starfish generates colourful, tiled images using random numbers fed through
 mathematical functions. It does not use source image files, so it can generate
@@ -41,11 +34,15 @@ seamlessly tiled, the pixmap will wrap around forming a "wallpaper" effect
 behind your windows. This allows you to customize your desktop, as often
 as you wish, with a new look and without much work.
 
+## Usage
+
 There is no GUI control panel, but Starfish is quite simple to control on a
 command line. There are not many options. In fact you can run Starfish without
 any command line options at all:
 
+```
 xstarfish
+```
 
 This will generate a 256 pixel by 256 pixel wallpaper pattern. If you don't
 like it, simply run Starfish again and it will replace the old pattern.
@@ -54,7 +51,9 @@ Perhaps you have an older machine that runs slowly, or you don't like big
 bold patterns. You can instruct Starfish to create a smaller-than-normal
 pattern:
 
+```
 xstarfish --size small
+```
 
 Valid sizes are small, medium, large, and full. These sizes are all
 relative to the size of your screen, and they are all slightly randomized.
@@ -65,19 +64,25 @@ same size as your default screen.
 If you really don't care how big the patterns are and you just want
 variety, use
 
+```
 xstarfish --size random
+```
 
 While Starfish will happily create a new desktop pattern any time you ask
 for one, the ultimate lazy person's solution is to run Starfish in "daemon
 mode". In this mode, Starfish will create patterns automatically at a time
 interval you determine. Perhaps you want a new pattern every day:
 
+```
 xstarfish --daemon 1 day
+```
 
 Or you are a real graphics junkie and you want Starfish to spit out
 patterns more rapidly:
 
+```
 xstarfish --daemon 30 seconds
+```
 
 Recognized time units are days, weeks, seconds, and minutes. When you run
 Starfish in daemon mode, it will appear to quit immediately, taking you
@@ -86,26 +91,31 @@ itself in the background and will continue to create new patterns
 indefinitely. You can shut it down with the standard "killall" command,
 like this:
 
+```
 killall xstarfish
+```
 
 Finally, you can direct Starfish to save its output as a PNG file instead
 of applying it to the X root window:
 
+```
 xstarfish --outfile wallpaper.png
+```
 
 These are the basics. For a complete listing of Starfish command line
 options, type
 
+```
 xstarfish --usage
+```
 
 This will print out a list of Starfish's options and what they do, but
 will not create a new pattern.
 
-The MacOS Version:
+## The MacOS Version
 
 Starfish was originally written for the MacOS. The Mac source code is not
-included in this package, but is available at the Starfish web site on
-redplanetsw.com. Mac binaries are also available there.
+included in this package.
 
 Copyright (c) 1999,2000 by Mars Saxman.
 Copyright (c) 1998 of the bits taken from zut by Sebastien Loisel.

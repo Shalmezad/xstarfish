@@ -5,6 +5,9 @@
 ### Added
 - Changelog based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+### Fixed
+- Cleaned up README, converted to markdown
+
 ## [1.2] - 2020-03-27
 
 ### Added 
